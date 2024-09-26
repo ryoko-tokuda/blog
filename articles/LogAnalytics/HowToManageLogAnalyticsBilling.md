@@ -34,6 +34,7 @@ https://learn.microsoft.com/ja-jp/azure/azure-monitor/logs/analyze-usage
 - [2-2. データの保持にかかるコストを抑える](#2-2-データの保持にかかるコストを抑える)
   - [2-2-1. データの保有期間を調整する](#2-2-1-データの保有期間を調整する)
   - [2-2-2. データの保有量を調整する](#2-2-2-データの保有量を調整する)
+  - [2-2-3. Log Analytics ワークスペース内のデータを削除する](#2-2-3-log-analytics-ワークスペース内のデータを削除する)
 - [まとめ](#まとめ)
 
 ## はじめに
@@ -297,8 +298,7 @@ Log Analytics ワークスペース内のデータは、対話型保持と長期
 検索ジョブの実行、またはログの復元には別途費用がかかります。
 >   - [Azure Monitor で検索ジョブを実行する](https://learn.microsoft.com/ja-jp/azure/azure-monitor/logs/search-jobs?tabs=portal-1%2Cportal-2)
 >   - [Azure Monitor でログを復元する](https://learn.microsoft.com/ja-jp/azure/azure-monitor/logs/restore?tabs=api-1)
->   - それぞれにかかる費用は、[Azure Monitor の価格](https://azure.microsoft.com/ja-jp/pricing/details/monitor/)の "ジョブの検索"、"復元" の項目をご確認ください。
-
+>   - それぞれにかかる費用は、[Azure Monitor の価格](https://azure.microsoft.com/ja-jp/pricing/details/monitor/)の "ジョブの検索"、"復元" の項目をご確認ください。  
 
 #### 2-2-2. データの保有量を調整する
 データの保有量を削減するためにできるもう一つの方法は、現在保有しているワークスペース内のデータをストレージ アカウントにエクスポートし、ワークスペース内のデータを削除することです。
