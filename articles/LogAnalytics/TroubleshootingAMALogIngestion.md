@@ -79,7 +79,7 @@ Linux の場合は "AzureMonitorLinuxAgent"、Windows の場合は "AzureMonitor
     * `-HandlerVersion` としてマイナー バージョンまでを指定することはできません。
       詳細については、本手順末尾の `インストール可能なバージョンの確認方法とコマンドでのバージョンの指定方法` をご参照ください。
 
-    (Linux の場合)
+   (Linux の場合)
    ```
    Set-AzVMExtension -Name AzureMonitorLinuxAgent -ExtensionType AzureMonitorLinuxAgent -Publisher Microsoft.Azure.Monitor -ResourceGroupName <resourcegroup-name> -VMName <vm-name> -Location <region-name> -HandlerVersion <version> -DisableAutoUpgradeMinorVersion -EnableAutomaticUpgrade $true
    ```
@@ -92,14 +92,17 @@ Linux の場合は "AzureMonitorLinuxAgent"、Windows の場合は "AzureMonitor
 
 **(補足) インストール可能なバージョンの確認方法とコマンドでのバージョンの指定方法**  
 - 使用可能なエージェントのバージョンの一覧は、以下の PowerShell コマンドを実行することで確認できます。  
-  (`<region>` には、マシンが存在するリージョンを指定してください。)
-   ```  
-   # Windows の場合
-   ((Get-AzVMExtensionImage -Location "<region>" -PublisherName "Microsoft.Azure.Monitor" -Type "AzureMonitorWindowsAgent").Version | Sort-Object -Property { [Version]$_})  
+  (`<region>` には、マシンが存在するリージョンを指定してください。)  
    
-   # Linux の場合  
+   (Linux の場合)  
+   ```  
    ((Get-AzVMExtensionImage -Location "<region>" -PublisherName "Microsoft.Azure.Monitor" -Type "AzureMonitorLinuxAgent").Version | Sort-Object -Property { [Version]$_})
    ```  
+   (Windows の場合)  
+   ```  
+   ((Get-AzVMExtensionImage -Location "<region>" -PublisherName "Microsoft.Azure.Monitor" -Type "AzureMonitorWindowsAgent").Version | Sort-Object -Property { [Version]$_})  
+   ```  
+
 - 注意点として、コマンドを使用して Azure Monitor エージェントをインストールする場合、マイナー バージョンは指定することができかねます。  
 例えばもし 1.31.1 をご指定いただいた場合、下図のように `The value of parameter typeHandlerVersion is invalid.` のエラーが発生します。  
 そのため、必ずマイナーバージョン ("1.xx.y" の ".y" の部分) を削除した状態で拡張機能のバージョンをご指定ください。 
@@ -130,10 +133,12 @@ Log Analytics ワークスペース内のカスタム ログ テーブルにデ�
 
 **■ Windows の場合**  
 PowerShell を開き、以下のコマンドを実行し、出力結果に `TcpTestSucceeded : True` が記載されていれば、エンドポイントに接続できています。  
-( `<endpoint>` の箇所は、上記のエンドポイントのうち確認したいものに置き換えてください)
+( `<endpoint>` の箇所は、上記のエンドポイントのうち確認したいものに置き換えてください)  
+
 ```
 Test-NetConnection <endpoint> -port 443
 ```  
+
 (結果例)  
 ![](./TroubleshootingAMALogIngestion/result-tnc.png)
 
@@ -143,6 +148,7 @@ Test-NetConnection <endpoint> -port 443
 ```
 echo | openssl s_client -connect <endpoint>:443 -servername <endpoint> -showcerts
 ```  
+
 (結果例)  
 ![](./TroubleshootingAMALogIngestion/result-echo.png)
 
@@ -176,7 +182,7 @@ Azure portal から、当該 AMPLS リソースの [構成] > [Azure Monitor リ
 ![](./TroubleshootingAMALogIngestion/ampls-monitorresource.png)
 
 **対処方法**  
-もし[通信要件の確認](#通信要件の確認) で紹介したエンドポイントが追加出来ていない場合は、[+ 追加] からこれらのエンドポイントの追加をお願いします。  
+もし、当該 Log Analytics ワークスペースやデータ収集エンドポイントが追加出来ていない場合は、[+ 追加] から、これらのリソースの追加をお願いします。
 
 ### 原因 B: AMPLS のプライベート エンドポイントに紐づくプライベート DNS ゾーンの設定がおかしい  
 お客様環境によっては、AMPLS のためのプライベート DNS ゾーンが作成されます。  
