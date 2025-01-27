@@ -6,8 +6,8 @@ tags:
   - How-To
 ---
 
-こんにちは、Azure Monitoring サポート チームの徳田です。
-今回は、Log Analytics 利用するにあたって必要なロールについてご紹介します。
+こんにちは、Azure Monitoring サポート チームの徳田です。  
+今回は、Log Analytics 利用するにあたって必要なロールについてご紹介します。  
 本記事の内容は、主に以下の弊社公開情報に沿っておりますため、併せてこちらもご参照ください。
 
 [Log Analytics ワークスペースへのアクセスを管理する](https://learn.microsoft.com/ja-jp/azure/azure-monitor/logs/manage-access?tabs=portal)
@@ -26,7 +26,7 @@ tags:
   - [カスタム ロールが必要になるシナリオ](#カスタム-ロールが必要になるシナリオ)
   - [Log Analytics に関連するアクセス権](#Log-Analytics-に関連するアクセス権)
   - [Azure portal でのカスタム ロールの作成方法](#Azure-portal-でのカスタム-ロールの作成方法)
-- [Azure portal でのロールの割り当て方法](#Azure-portal-でのロールの割り当て方法)
+  - [Azure portal でのロールの割り当て方法](#Azure-portal-でのロールの割り当て方法)
 - [おわりに]
 
 
@@ -35,12 +35,12 @@ tags:
 既にご存じの方は、次の項目からご覧ください。
 
 ###  アクセス権 (アクセス許可) とは
-Azure の各リソースにアクセスしたり、各操作を実行したりするためには、実行者にそれぞれの権限が付与されていることが必要です。
+Azure の各リソースにアクセスしたり、各操作を実行したりするためには、実行者が各種操作を行うために、適切な権限が付与されていることが必要がございます。  
 この権限のことをアクセス権 (アクセス許可) といいます。
 
 ### Azure ロールとは
 まず、Azure では [Azure RBAC](https://learn.microsoft.com/ja-jp/azure/role-based-access-control/overview) という、Azure リソースに対するアクセス管理のためのシステムがあります。
-Azure RBAC では、ユーザーやグループに特定の Azure ロールを割り当てることで、リソースに対するアクセス権を制御します。
+Azure RBAC では、ユーザーやグループに特定の Azure ロールを割り当てることで、リソースに対するアクセス権を制御します。  
 つまり、"Azure ロール (*1)" はひとことで表すと「ユーザーやグループに一括で付与できるアクセス権のまとまり」です。  
 
 (*1) 他のロール (Microsoft Entra ロールなど) と区別するために、"Azure ロール" と表現されることもありますが、単に "ロール" とも表現されます。  
@@ -66,7 +66,7 @@ Log Analytics ワークスペースの利用に関する組み込みロールと
 - 全ての Azure リソースの情報を表示、検索する。  
   そのワークスペースの設定の読み取りや、そのワークスペースに対するクエリの実行が、制限なく可能です。  
   (ただし、そのワークスペースに対してワークスペース コンテキストでアクセスしている場合に限ります。  
-  リソース コンテキストでアクセスする場合については、後述の ~~~ をご確認ください。)
+  リソース コンテキストでアクセスする場合については、後述の [カスタム ロールが必要になるシナリオ](#カスタム-ロールが必要になるシナリオ) をご確認ください。)
 - Azure リソースの監視設定を編集する。  
   例) VM に拡張機能をインストールする (Azure Monitor エージェントなど)、Azure リソースに対して診断設定を構成する  
 - Log Analytics ワークスペースにソリューションを追加/削除する。  
@@ -81,12 +81,12 @@ Log Analytics ワークスペースの利用に関する組み込みロールと
 
 ## Log Analytics に関連するカスタム ロール
 ### カスタム ロールが必要になるシナリオ
-前述の [Log Analytics に関連する組み込みロール] で紹介した権限を付与できる、最小のスコープは、Log Analytics ワークスペースです (*2)。
+前述の [Log Analytics に関連する組み込みロール] で紹介した権限を付与できる、最小のスコープは、Log Analytics ワークスペースです (*2)。  
 (*2) リソース グループやサブスクリプションなど、ワークスペースより上位のスコープでも付与可能です。  
 
 一方で、カスタム ロールを使用することで、Log Analytics ワークスペースにデータを送信しているリソース レベル (*3)、また、ワークスペース内のテーブル単位 ([後述のアクセス権の説明](#Log-Analytics-に関連するアクセス権)をご確認ください) でアクセス権を制御することができます。  
 
-(*3) リソース レベルでのアクセス権が必要になるのは、リソース コンテキストで Log Analytics ワークスペースにアクセスしており、かつそのワークスペースのアクセス制御モード (*4) が "リソースまたはワークスペースのアクセス制御" の場合です。  
+(* 3) リソース レベルでのアクセス権が必要になるのは、リソース コンテキストで Log Analytics ワークスペースにアクセスしており、かつそのワークスペースのアクセス制御モード (*4) が "リソースまたはワークスペースのアクセス制御" の場合です。  
 この場合は、データが収集されている Log Analytics ワークスペースに対するアクセス権ではなく、データ収集元であるリソース (VM など) に対してアクセス権をもっている必要があります。  
 
 (*4) アクセス制御モードの詳細については以下のブログにてご紹介しておりますため、こちらをご参照ください。  
@@ -94,7 +94,8 @@ Log Analytics ワークスペースの利用に関する組み込みロールと
 
 
 ### Log Analytics に関連するアクセス権
-カスタム ロールとして、以下のアクセス権を含めることで、Log Analytics ワークスペース内のデータに対して、ログ送信元のリソース、またはワークスペース内のテーブル レベルでアクセス制御が可能です。  
+カスタム ロールとして、以下のアクセス権を含めることで、Log Analytics ワークスペース内のデータに対して、ログ送信元のリソースや、ワークスペース内のテーブル レベルでのアクセス制御が可能です。  
+なお、これらのアクセス権のスコープには、ログ収集元となるリソース (VM など) が含まれている必要があります。  
 
 `Microsoft.Insights/logs/*/read` :  
 リソースのすべてのログ データを表示する。  
@@ -108,13 +109,16 @@ Log Analytics ワークスペースの利用に関する組み込みロールと
 `Microsoft.Insights/diagnosticSettings/write` :  
 リソースの診断設定を構成する。  
 
+具体的な例については、以下弊社サイトでもご案内しております。  
+[Log Analytics ワークスペースへのアクセスを管理する | カスタム ロールの例](https://learn.microsoft.com/ja-jp/azure/azure-monitor/logs/manage-access?tabs=portal#custom-role-examples)  
+
 
 ### Azure portal でのカスタム ロールの作成方法  
 **JSON ファイルから作成する方法**  
 1. 手元で以下のような JSON ファイルを用意します。  
    `<>` で囲まれた箇所は任意の値に変更してください。
    
-   サンプル)
+   (サンプル)
    ```
    {
     "properties": {
@@ -132,27 +136,7 @@ Log Analytics ワークスペースの利用に関する組み込みロールと
         }
    }
    ```
-
-   例)  
-   ```
-   {
-    "properties": {
-        "roleName": "LAcustom1",
-        "description": "test",
-        "assignableScopes": ["/subscriptions/xxxxxxxxxx/resourceGroups/xxxxxxx"],
-        "permissions": [
-                {
-                    "actions": ["Microsoft.Insights/logs/*/read",
-                                "Microsoft.Insights/diagnosticSettings/write"
-                                ],
-                    "notActions": [],
-                    "dataActions": [],
-                    "notDataActions": []
-                }
-            ]
-        }
-    }
-   ```
+   
 2. Azure portal でカスタム ロールを作成するスコープとなるリソース グループ、サブスクリプション、または管理グループを開きます。  
 3. 左ペインの [アクセス制御 (IAM)] を押下し、[追加] > [カスタム ロールの追加] を押下します。
 4. [基本] タブの "ベースラインのアクセス許可" で "JSON から開始" を選択し、1 で用意したファイルをアップロードします。 
@@ -161,16 +145,6 @@ Log Analytics ワークスペースの利用に関する組み込みロールと
 6. [割り当て可能なスコープ] で、割り当てたいスコープが選択されていることを確認します。  
    必要であれば、[割り当て可能なスコープの追加] からスコープを追加します。
 7. [確認と作成] で問題がなければ、[作成] を押下し、完了です。
-
-カスタム ロールの作成方法は上記に加え、PowerShell や Azure CLI 等を使用する方法もございます。
-これらを含めたカスタム ロールの作成方法については以下の弊社公開情報でのご案内しておりますため、こちらをご参照ください。
-- [Azure portal を使用して Azure カスタム ロールを作成または更新する](https://learn.microsoft.com/ja-jp/azure/role-based-access-control/custom-roles-portal)
-- [Azure PowerShell を使用して Azure カスタム ロールを作成または更新する](https://learn.microsoft.com/ja-jp/azure/role-based-access-control/custom-roles-powershell)
-- [Azure CLI を使用して Azure カスタム ロールを作成または更新する](https://learn.microsoft.com/ja-jp/azure/role-based-access-control/custom-roles-cli)
-- [ARM テンプレートを使用して Azure カスタム ロールを作成または更新する](https://learn.microsoft.com/ja-jp/azure/role-based-access-control/custom-roles-template)
-- [REST API を使用して Azure カスタム ロールを作成または更新する](https://learn.microsoft.com/ja-jp/azure/role-based-access-control/custom-roles-rest)
-- [Bicep を使用して Azure カスタム ロールを作成または更新する](https://learn.microsoft.com/ja-jp/azure/role-based-access-control/custom-roles-bicep?tabs=CLI)
-
 
 **Azure portal でアクセス権を選択し作成する方法**
 1. Azure portal でカスタム ロールを作成するスコープとなるリソース グループ、サブスクリプション、または管理グループを開きます。
@@ -185,6 +159,15 @@ Log Analytics ワークスペースの利用に関する組み込みロールと
 6. 上記手順の 6 と同様です。
 7. 上記手順の 7 と同様です。  
 
+カスタム ロールの作成方法は上記に加え、PowerShell や Azure CLI 等を使用する方法もございます。  
+これらを含めたカスタム ロールの作成方法については以下の弊社公開情報でのご案内しておりますため、こちらをご参照ください。
+- [Azure portal を使用して Azure カスタム ロールを作成または更新する](https://learn.microsoft.com/ja-jp/azure/role-based-access-control/custom-roles-portal)
+- [Azure PowerShell を使用して Azure カスタム ロールを作成または更新する](https://learn.microsoft.com/ja-jp/azure/role-based-access-control/custom-roles-powershell)
+- [Azure CLI を使用して Azure カスタム ロールを作成または更新する](https://learn.microsoft.com/ja-jp/azure/role-based-access-control/custom-roles-cli)
+- [ARM テンプレートを使用して Azure カスタム ロールを作成または更新する](https://learn.microsoft.com/ja-jp/azure/role-based-access-control/custom-roles-template)
+- [REST API を使用して Azure カスタム ロールを作成または更新する](https://learn.microsoft.com/ja-jp/azure/role-based-access-control/custom-roles-rest)
+- [Bicep を使用して Azure カスタム ロールを作成または更新する](https://learn.microsoft.com/ja-jp/azure/role-based-access-control/custom-roles-bicep?tabs=CLI)
+
 ### Azure portal でのロールの割り当て方法
 ロールの割り当て方法は、組み込みロール、カスタム ロールともに同様です。
 1. Azure portal でロールを割り当てたいスコープのリソースを開きます。
@@ -195,7 +178,7 @@ Log Analytics ワークスペースの利用に関する組み込みロールと
 4. [メンバー] タブでロールを割り当てるユーザーを選択します。
 5. [レビューと割り当て] タブで問題がなければ、[レビューと割り当て] を押下しロールを割り当てます。
 
-ロールの割り当て方法については、以下弊社公開情報でもご案内しています。
+ロールの割り当て方法については、以下弊社公開情報でもご案内しております。  
 [Azure portal を使用して Azure ロールを割り当てる](https://learn.microsoft.com/ja-jp/azure/role-based-access-control/role-assignments-portal)
 
 ## おわりに
